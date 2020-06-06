@@ -1,0 +1,29 @@
+void prikaziRoditelja(int sifra)
+        {
+            using (OleDbConnection konekcija = new OleDbConnection(Konekcija.kon_str))
+            using (OleDbCommand cmd = new OleDbCommand())
+            {
+
+                try
+                {
+                    cmd.Connection = konekcija;
+                    cmd.Connection = konekcija;
+                    cmd.CommandText = "SELECT Roditelj.Ime, Roditelj.Prezime, Roditelj.RoditeljID FROM Roditelj INNER JOIN Dete ON Roditelj.RoditeljID = Dete.RoditeljID WHERE Dete.DeteID =" + sifra;
+                    konekcija.Open();
+                    using (OleDbDataReader dr = cmd.ExecuteReader())
+                    {
+                        dr.Read();
+                        cbRoditelj.Text = dr["RoditeljID"] + " - " + dr["Ime"].ToString() + dr["Prezime"].ToString();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    throw;
+                }
+                finally
+                {
+                    konekcija.Close();
+                }
+            }
+        }
