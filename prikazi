@@ -1,0 +1,46 @@
+ void prikaziPodatke(int sifra)
+        {
+            using (OleDbConnection konekcija = new OleDbConnection(Konekcija.kon_str))
+            using (OleDbCommand cmd = new OleDbCommand())
+            {
+                cmd.Connection = kon;
+                cmd.CommandText = string.Format("SELECT * FROM Dete WHERE DeteID={0}", sifra);
+                try
+                {
+                    kon.Open();
+                    OleDbDataReader dr = cmd.ExecuteReader();
+                    {
+                        dr.Read();
+                        tbIme.Text = dr["Ime"].ToString();
+                        tbPrezime.Text = dr["Prezime"].ToString();
+                        if (Convert.ToInt32(dr["PolID"]) == 1)
+                        {
+                            rbMuski.Checked = true;
+                        }
+                        else
+                        {
+                            rbZenski.Checked = true;
+                        }
+                        DateTime d = Convert.ToDateTime(dr["DatumRodjenja"]);
+                        string datum; if (d.Day < 10) datum = "0" + d.Day + "/"; else datum = d.Day + "/";
+                        if (d.Month < 10) datum = datum + "0" + d.Month + "/"; else datum = datum + d.Month + "/";
+                        datum = datum + d.Year;
+                        tbDatumRodjenja.Text = datum;
+                        if (dr["Beleske"].ToString() != "")
+                        {
+                            tbBeleske.Text = dr["Beleske"].ToString();
+                        }
+                        prikaziRoditelja(sifra);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    throw;
+                }
+                finally
+                {
+                    kon.Close();
+                }
+            }
+        }
